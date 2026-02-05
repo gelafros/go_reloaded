@@ -5,7 +5,7 @@
 * **Data Structure:** `[]string` (Slice of strings)
 
 ## Rationale
-We chose the Pipeline approach over a Finite State Machine (FSM). While FSMs are efficient for streaming data, the Pipeline model fits the specific requirements of this project (modifying "previous" words) much better.
+I chose the Pipeline approach over a Finite State Machine (FSM). While FSMs are efficient for streaming data, the Pipeline model fits the specific requirements of this project (modifying "previous" words) much better.
 
 ### Comparison: Pipeline vs FSM
 
