@@ -14,17 +14,8 @@ We chose the Pipeline approach over a Finite State Machine (FSM). While FSMs are
 | **Complexity** | **Low.** Logic is split into isolated stages. | **High.** Requires tracking complex state transitions. |
 | **Look-Behind** | **Easy.** Can verify `words[i-1]` instantly. | **Hard.** Requires buffering previous tokens manually. |
 | **Testing** | **Easy.** Each stage can be unit tested separately. | **Medium.** Must test the entire stream sequence. |
-| **Performance** | Medium. Requires multiple passes over the data. | High. Single pass (O(n)). |
-| **Memory** | Medium. Loads entire file into memory. | Low. Processes stream byte-by-byte. |
 
-### Why Pipeline Wins
-1.  **Simplicity:** The logic primarily involves looking at a word and modifying the *previous* word (e.g., for `(hex)` or `(up)`). A slice of strings allows easy index lookups.
-2.  **Testability:** We can break the processing into distinct functions (e.g., `ProcessMarkers`, `ProcessPunctuation`) and test them independently with TDD.
-3.  **Context:** The performance cost of multiple passes is negligible for the expected text file sizes in this project.
-
-## High-Level Design (Sketch)
-
-The program will flow through these stages:
+## High-Level Design (The Pipeline)
 
 ```text
 [Input File] 
@@ -48,62 +39,46 @@ The program will flow through these stages:
 [Output File]
 ```
 
-## Error Handling Strategy
+# Tokenization Specification (Pad & Split)
 
-* Arguments: If arguments are missing (< 2), exit with Error: missing arguments.
+## Protect Groups
+Identify protected groups such as `...` and `!?` first.
 
-* File I/O: * If input file does not exist: Exit with Error: input file not found.
+## Pad Punctuation
+Replace punctuation characters (e.g. `.`, `,`, `!`, etc.) with a padded form:
 
-* If output file cannot be created: Exit with Error: cannot create output file.
 
-## Tokenization Specification
+## Split
+Use `strings.Fields()` to create the final token slice.
 
-To correctly process markers and punctuation, we will convert the raw string into a []string (tokens) using a Pad & Split strategy.
-1. Pre-Processing (Padding)
+---
 
-Before splitting, we inject spaces around interesting characters. Order is critical.
+# Implementation Methodology (Strict TDD)
 
-Protect Groups: Identify ... and !?. Ensure they have spaces around them but no spaces inside (e.g., replace ... with ...).
+This project strictly follows **Test-Driven Development (TDD)**.  
+No feature code is allowed to exist without a preceding failing test.
 
-Pad Punctuation: Replace every instance of . , , , ! , ? , : , ; with <char> (space before and after).
+## Development Cycle
 
-Pad Quotes: Replace ' with '.
+1. **Select Task**  
+   Open the relevant task file:  
+   `tasks/TASK-XX.txt`
 
-(Note on Brackets): We do not pad ( or ) to keep markers like (hex) intact as single words where possible.
+2. **Read Script**  
+   Follow the **TDD Execution Script** inside the task card.
 
-2. Splitting
+3. **Red**  
+   Write the unit test using inputs from:  
+   `docs/golden_tests.md`
 
-Call strings.Fields(text) to split by whitespace.
+4. **Green**  
+   Write the *minimum* amount of code required to pass the test.
 
-This removes all extra spaces added during padding and newlines.
+5. **Refactor**  
+   Clean up the implementation while keeping tests green.
 
-3. Resulting Structure
+---
 
-The program will operate on a linear slice: ["word", ",", "word", "(hex)", "!"].
-Worked Examples
+## Enforcement
 
-Example 1: Basic Punctuation
-
-    Raw: "Hello, world!"
-
-    Pad: "Hello , world !"
-
-    Tokens: ["Hello", ",", "world", "!"]
-
-Example 2: Groups & Markers
-
-    Raw: "Wait ... (up) !"
-
-    Pad: "Wait ... (up) !"
-
-    Tokens: ["Wait", "...", "(up)", "!"]
-
-Example 3: Complex Marker Parsing
-
-    Raw: "so cool (up, 2)"
-
-    Pad: "so cool (up, 2)" (No padding inside parens)
-
-    Tokens: ["so", "cool", "(up,", "2)"]
-
-    Note: The marker parser will need to detect that (up, and 2) form a single instruction.
+Violation of this protocol (writing code before tests) is considered an **architectural failure**.
