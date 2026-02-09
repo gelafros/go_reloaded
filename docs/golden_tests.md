@@ -39,13 +39,13 @@ Tests for index out of bounds, invalid markers, and empty inputs.
 
 | ID | Input | Expected Output | Rule |
 |----|-------|-----------------|------|
-| 20 | `(up) starts with marker` | `(up) starts with marker` | Marker at start (Ignored) |
+| 20 | `(up) starts with marker` | `starts with marker` | Marker at start (Removed) |
 | 21 | `Hello (up, 5) world` | `HELLO world` | Count > Words Available (Safe Cap) |
-| 22 | `(hex) 1E` | `(hex) 1E` | Marker before number (Ignored) |
-| 23 | `User (cap, 0) test` | `User test` | Count is zero (No change) |
+| 22 | `(hex) 1E` | `1E` | Marker before number (Removed) |
+| 23 | `User (cap, 0) test` | `User test` | Count is zero (Marker Removed) |
 | 24 | `Complex ... ?! strings` | `Complex...?! strings` | Mixed Punctuation Groups |
 | 25 | `Multiple ' quotes ' in ' one ' line` | `Multiple 'quotes' in 'one' line` | Multiple Quote Pairs |
-| 26 | `Nested (hex) (up)` | `Nested (hex) (up)` | Broken/Orphaned Markers |
+| 26 | `Nested (hex) (up)` | `Nested` | Broken/Orphaned Markers (Removed) |
 | 27 | `  Spaces   everywhere  ,  right?  ` | `Spaces everywhere, right?` | Excess Whitespace Cleanup |
 
 ## 4. Clever Combinations (The "Logic" Trap)
@@ -74,10 +74,10 @@ These tests ensure robustness against chained, overlapping, or chaotic inputs.
 | 40 | `word ,,,` | `word,,,` | Multiple punctuation marks attached |
 | 41 | `boom !!! ?` | `boom!!!?` | Mixed punctuation groups |
 | 42 | `' ' ' '` | `'' ''` | Empty quotes |
-| 43 | `(hex) (bin) (up)` | `(hex) (bin) (up)` | Orphan markers (nothing to modify) |
+| 43 | `(hex) (bin) (up)` | `` | Orphan markers (Removed) |
 | 44 | `42 (up)` | `42` | Up on number (No effect) |
 | 45 | `word (nonsense)` | `word (nonsense)` | Unknown marker (Treat as text) |
-| 46 | `(up, -1)` | `(up, -1)` | Negative count (Invalid/Ignored) |
+| 46 | `(up, -1)` | `` | Negative count (Invalid/Removed) |
 | 47 | `a ' big ' apple` | `a 'big' apple` | Quotes separating vowel from target (No "an") |
 | 48 | `tok&en (up)` | `TOK&EN` | Special chars in word |
 | 49 | `hello (up, 100) world` | `HELLO world` | Count exceeds bounds (Clamp to start) |

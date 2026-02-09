@@ -8,6 +8,16 @@ func Process(input string) string {
 	tokens = ProcessMarkers(tokens)
 	tokens = ProcessGrammar(tokens)
 	tokens = ProcessCasing(tokens)
+
+	// Filter empty strings (placeholders for removed markers)
+	var cleanTokens []string
+	for _, t := range tokens {
+		if t != "" {
+			cleanTokens = append(cleanTokens, t)
+		}
+	}
+	tokens = cleanTokens
+
 	tokens = ProcessPunctuation(tokens)
 	return strings.Join(tokens, " ")
 }

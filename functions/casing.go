@@ -8,25 +8,23 @@ import (
 // ProcessCasing handles (up), (low), and (cap) transformations.
 // It supports optional numeric arguments (e.g., (up, 2)).
 func ProcessCasing(tokens []string) []string {
-	for i := 0; i < len(tokens); i++ {
+	result := []string{}
+	i := 0
+	for i < len(tokens) {
 		token := tokens[i]
 
 		// Single markers: (up), (low), (cap)
-		if token == "(up)" || token == "(low)" || token == "(cap)" {
-			if i > 0 {
-				// Check if previous token is a marker (orphan protection)
-				if isMarker(tokens[i-1]) {
+		if isSingleCasingMarker(token) {
+			if len(result) > 0 {
+				last := result[len(result)-1]
+				if strings.ContainsAny(last, ".,!?:;") && len(last) == 1 {
+					result = append(result, token)
+					i++
 					continue
 				}
-				// Golden Test #33: Marker broken by punctuation (ignored/preserved)
-				if strings.ContainsAny(tokens[i-1], ".,!?:;") && len(tokens[i-1]) == 1 {
-					continue
-				}
-				applyCasing(tokens, i-1, i-1, token)
-				// Remove marker
-				tokens = append(tokens[:i], tokens[i+1:]...)
-				i--
+				applyCasing(result, len(result)-1, len(result)-1, token)
 			}
+			i++
 			continue
 		}
 
@@ -37,45 +35,38 @@ func ProcessCasing(tokens []string) []string {
 				numStr := strings.TrimSuffix(tokens[i+2], ")")
 				count, err := strconv.Atoi(numStr)
 
-				if err == nil && count >= 0 {
-					// Valid marker syntax
-					start := i - count
+				if err == nil && count > 0 {
+					start := len(result) - count
 					if start < 0 {
 						start = 0
 					}
-					end := i - 1
-
-					// Check for markers in range to prevent breaking chains
-					hasMarker := false
-					for k := start; k <= end; k++ {
-						if isMarker(tokens[k]) {
-							hasMarker = true
-							break
-						}
-					}
-
-					if !hasMarker {
-						if count > 0 {
-							typeStr := token + ")"
-							applyCasing(tokens, start, end, typeStr)
-						}
-						// Remove 3 tokens: (up , 2)
-						tokens = append(tokens[:i], tokens[i+3:]...)
-						i--
+					end := len(result) - 1
+					if end >= start {
+						typeStr := token + ")"
+						applyCasing(result, start, end, typeStr)
 					}
 				}
+				// Remove 3 tokens: (up , 2)
+				i += 3
+				continue
 			}
 		}
+
+		result = append(result, token)
+		i++
 	}
-	return tokens
+	return result
 }
 
-func isMarker(s string) bool {
-	return strings.HasPrefix(s, "(") && strings.HasSuffix(s, ")")
+func isSingleCasingMarker(s string) bool {
+	return s == "(up)" || s == "(low)" || s == "(cap)"
 }
 
 func applyCasing(tokens []string, start, end int, marker string) {
 	for j := start; j <= end; j++ {
+		if _, err := strconv.Atoi(tokens[j]); err == nil {
+			continue
+		}
 		switch marker {
 		case "(up)":
 			tokens[j] = strings.ToUpper(tokens[j])

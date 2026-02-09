@@ -9,7 +9,7 @@ func ProcessGrammar(tokens []string) []string {
 			// Look ahead for the next word, skipping markers
 			nextWord := ""
 			for j := i + 1; j < len(tokens); j++ {
-				if !isMarkerGrammar(tokens[j]) {
+				if !isMarkerGrammar(tokens[j]) && tokens[j] != "" {
 					nextWord = tokens[j]
 					break
 				}

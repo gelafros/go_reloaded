@@ -8,23 +8,28 @@ import (
 // ProcessMarkers handles (hex) and (bin) conversions.
 // It iterates through the tokens and applies transformations to the previous token.
 func ProcessMarkers(tokens []string) []string {
-	for i := 0; i < len(tokens); i++ {
-		token := tokens[i]
+	var result []string
+	for _, token := range tokens {
 		if token == "(hex)" || token == "(bin)" {
-			if i > 0 {
+			success := false
+			if len(result) > 0 {
 				base := 16
 				if token == "(bin)" {
 					base = 2
 				}
 
-				val, err := strconv.ParseInt(tokens[i-1], base, 64)
+				val, err := strconv.ParseInt(result[len(result)-1], base, 64)
 				if err == nil {
-					tokens[i-1] = fmt.Sprint(val)
-					tokens = append(tokens[:i], tokens[i+1:]...)
-					i--
+					result[len(result)-1] = fmt.Sprint(val)
+					success = true
 				}
 			}
+			if !success {
+				result = append(result, "")
+			}
+		} else {
+			result = append(result, token)
 		}
 	}
-	return tokens
+	return result
 }

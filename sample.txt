@@ -1,1 +1,17 @@
-1E (hex) files were added. It has been 10 (bin) years. Ready, set, go (up) !
+one (up) (low) (cap)
+a (up) apple
+a (low) apple
+10 (bin) (hex)
+hello world (up, 2) (low, 1)
+word . . . word
+word ,,,
+boom !!! ?
+' ' ' '
+(hex) (bin) (up)
+42 (up)
+word (nonsense)
+(up, -1)
+a ' big ' apple
+tok&en (up)
+hello (up, 100) world
+sample (cap) (cap) (cap)
