@@ -1,4 +1,4 @@
-package function
+package functions
 
 // ProcessPunctuation handles spacing around punctuation and quotes.
 func ProcessPunctuation(tokens []string) []string {

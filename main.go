@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"go-reloaded/functions"
 	"os"
+
+	"go-reloaded/functions"
 )
 
 func main() {
@@ -26,7 +27,7 @@ func run(args []string) error {
 		return fmt.Errorf("error reading input file: %w", err)
 	}
 
-	result := function.Process(string(data))
+	result := functions.Process(string(data))
 
 	if err := os.WriteFile(outputPath, []byte(result), 0644); err != nil {
 		return fmt.Errorf("error writing output file: %w", err)
