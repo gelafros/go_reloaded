@@ -40,25 +40,14 @@ func TestCasingMarkers(t *testing.T) {
 			// 1. Tokenize
 			tokens := functions.Tokenize(tt.input)
 
-			// 2. Process Markers (Hex/Bin first as per pipeline, but here we test Casing specifically)
-			// However, test #28 "1e (hex) (up)" requires Hex to run first to become "30", then "30" (up) -> "30".
-			// If we only run Casing, "1e" (hex) (up) -> "1e" (hex) (up) (since (hex) isn't a casing marker).
-			// Wait, the test expects "30 is thirty". This implies the full pipeline or at least Hex+Casing.
-			// For unit testing Casing, we should assume Hex is already done OR we are testing the integration of markers.
-			// Let's assume we are testing `ProcessCasing`.
-			// BUT, for test #28, if we pass "1e (hex) (up)", `ProcessCasing` will see "(hex)" as the word to uppercase?
-			// No, `(hex)` is a marker.
-			// To strictly test Casing in isolation, we might need to pre-process Hex for that specific test,
-			// OR we accept that `ProcessCasing` handles the casing logic and we might need to chain them in the test
-			// if the test input depends on it.
-			// Actually, `ProcessMarkers` in TASK-04 handled Hex/Bin.
-			// TASK-05 is `functions/casing.go`.
-			// Let's chain them in the test to ensure "Golden Test" compliance.
+			// 2. Process Markers (Hex/Bin) first.
+			// Some tests (e.g. #28) rely on hex conversion happening before casing.
+			tokens = functions.ProcessMarkers(tokens)
 
-			tokens = functions.ProcessMarkers(tokens) // Hex/Bin
-			tokens = functions.ProcessCasing(tokens)  // Casing (The SUT)
+			// 3. Process Casing (The SUT)
+			tokens = functions.ProcessCasing(tokens)
 
-			// 3. Compare
+			// 4. Compare
 			expectedTokens := functions.Tokenize(tt.expected)
 			if !reflect.DeepEqual(tokens, expectedTokens) {
 				t.Errorf("ID %d: Input %q\nGot:  %v\nWant: %v", tt.id, tt.input, tokens, expectedTokens)

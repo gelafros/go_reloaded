@@ -16,9 +16,7 @@ func TestTokenize(t *testing.T) {
 		{
 			id:    6,
 			input: "This is so exciting (up, 2)",
-			// Parens are not in the standard punctuation list (.,!?:;) so they stick?
-			// Assuming (up, 2) stays together or splits on comma?
-			// Strict rule: comma is padded. "(up, 2)" -> "(up , 2)" -> "(up", ",", "2)"
+			// Strict rule: comma is padded. "(up, 2)" -> "(up", ",", "2)"
 			expected: []string{"This", "is", "so", "exciting", "(up", ",", "2)"},
 		},
 		{
@@ -50,8 +48,6 @@ func TestTokenize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			// This will fail to compile initially because functions.Tokenize is undefined.
-			// This satisfies the "Red" state requirement.
 			got := functions.Tokenize(tt.input)
 			if !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("ID %d: Tokenize(%q) = %v, want %v", tt.id, tt.input, got, tt.expected)

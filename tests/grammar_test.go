@@ -24,7 +24,7 @@ func TestGrammar(t *testing.T) {
 			// 1. Tokenize
 			tokens := functions.Tokenize(tt.input)
 
-			// 2. Pre-processing (Markers & Punctuation)
+			// 2. Pre-processing
 			tokens = functions.ProcessMarkers(tokens)
 			// Grammar must run before Casing to handle "a (up)" -> "AN" correctly.
 			// It skips the (up) marker to check the next word, converts a->an,
@@ -33,7 +33,7 @@ func TestGrammar(t *testing.T) {
 			tokens = functions.ProcessCasing(tokens)
 			tokens = functions.ProcessPunctuation(tokens)
 
-			// 4. Compare (Join tokens to match expected string)
+			// 3. Compare (Join tokens to match expected string)
 			gotString := ""
 			for i, tok := range tokens {
 				if i > 0 {
