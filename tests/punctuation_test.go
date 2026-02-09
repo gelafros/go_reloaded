@@ -56,7 +56,6 @@ func TestPunctuation(t *testing.T) {
 			// We should tokenize the expected string to compare slices,
 			// OR we need a Joiner to compare final strings.
 			// Since we don't have a Joiner yet (TASK-08), we will compare tokens.
-			expectedTokens := functions.Tokenize(tt.expected)
 
 			// Note: Tokenizing the expected string "word, (up)" gives ["word", ",", "(up)"]
 			// because Tokenizer pads punctuation.

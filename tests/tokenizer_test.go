@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"go-reloaded/functions"
+	functions "go-reloaded/functions"
 )
 
 func TestTokenize(t *testing.T) {
@@ -54,7 +54,7 @@ func TestTokenize(t *testing.T) {
 			// This satisfies the "Red" state requirement.
 			got := functions.Tokenize(tt.input)
 			if !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("Tokenize(%q) = %v, want %v", tt.input, got, tt.expected)
+				t.Errorf("ID %d: Tokenize(%q) = %v, want %v", tt.id, tt.input, got, tt.expected)
 			}
 		})
 	}
