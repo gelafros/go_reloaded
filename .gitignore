@@ -1,0 +1,8 @@
+# Go
+*.test
+*.out
+/go-reloaded
+.env
+.DS_Store
+.vscode/
+.idea/
