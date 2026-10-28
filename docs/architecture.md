@@ -62,7 +62,6 @@ No feature code is allowed to exist without a preceding failing test.
 
 1. **Select Task**  
    Open the relevant task file:  
-   `tasks/TASK-XX.txt`
 
 2. **Read Script**  
    Follow the **TDD Execution Script** inside the task card.

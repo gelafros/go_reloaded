@@ -238,14 +238,9 @@ go-reloaded/
 │   ├── golden_tests.md     # 50 acceptance criteria
 │   └── milestones.md       # Development roadmap
 │
-├── ai/                     # AI development artifacts
-│   ├── agents.md           # AI agent interactions
-│   └── coding-log.txt      # Development session logs
-│
 ├── main.go                 # CLI entry point
 ├── go.mod                  # Go module definition
 ├── LICENSE.md              # MIT License
-├── PRD.md                  # Product Requirements Document
 ├── sample.txt              # Example input file
 └── README.md               # This file
 ```
